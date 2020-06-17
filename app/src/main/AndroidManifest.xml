@@ -25,6 +25,12 @@
         <service
             android:name="cn.yunting.utils.EncodeUpServer"
             android:process=":EncodeProcess"
+            android:priority="1000"
+        />
+        <service
+            android:name="cn.yunting.utils.ListenServer"
+            android:process=":ListenProcess"
+            android:priority="1000"
             />
     </application>
 

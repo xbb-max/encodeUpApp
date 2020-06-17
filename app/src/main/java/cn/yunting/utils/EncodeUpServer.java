@@ -93,6 +93,8 @@ public class EncodeUpServer extends Service {
             wakeLock.setReferenceCounted(false);
             wakeLock.acquire();
         }
+        LogUtils.x(" Encode UpServer oncreate");
+        process();
     }
 
     @SuppressLint("NewApi")
@@ -118,14 +120,15 @@ public class EncodeUpServer extends Service {
         if (intent == null) {
             return;
         }
-        String action = intent.getAction();
-        if (TextUtils.isEmpty(action))
-            return;
-        if (action.equals(ACTION_RUN)) {
-            process();
-        } else if (action.equals(ACTION_STOP)) {
-            isStop = true;
-        }
+//        String action = intent.getAction();
+//        LogUtils.x("--action--"+action);
+//        if (TextUtils.isEmpty(action))
+//            return;
+//        if (action.equals(ACTION_RUN)) {
+//            process();
+//        } else if (action.equals(ACTION_STOP)) {
+//            isStop = true;
+//        }
     }
 
     public static String getSDPath() {
@@ -238,6 +241,7 @@ public class EncodeUpServer extends Service {
                                 }
                             }
                         }
+//                        android.os.Process.killProcess(android.os.Process.myPid());
                     }catch (Exception e){}
                     try {
                         Thread.sleep(500);

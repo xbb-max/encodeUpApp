@@ -12,10 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
 import cn.yunting.utils.EncodeUpServer;
+import cn.yunting.utils.ListenServer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestPermissions();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         final Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        Intent i = new Intent(this, ListenServer.class);
+        startPlayService(this, i);
     }
     private String[] permissions = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
