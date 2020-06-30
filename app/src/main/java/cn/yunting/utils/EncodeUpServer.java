@@ -239,7 +239,7 @@ public class EncodeUpServer extends Service {
                                     String data = getAACData(outPutFilePath);
                                     int count = 0;
                                     while (true) {
-                                        ret = upData2Server("http://47.105.150.189/aac/ServiceCenter.do?action=uploadAcc", name, data, outPutFilePath);
+                                        ret = upData2Server("http://115.28.107.199/aac/ServiceCenter.do?action=uploadAcc", name, data, outPutFilePath);
                                         if (ret >0 || count >=3) break;
                                         else {
                                             count++;
