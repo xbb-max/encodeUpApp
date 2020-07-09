@@ -16,6 +16,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import cn.yunting.utils.EncodeUpServer;
 import cn.yunting.utils.ListenServer;
 
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        ids.add("100001");
+        ids.add("100002");
         Intent i = new Intent(this, ListenServer.class);
         startPlayService(this, i);
     }
@@ -71,12 +75,14 @@ public class MainActivity extends AppCompatActivity {
             context.startService(i);
         }
     }
+    private static ArrayList<String> ids = new ArrayList<>();
     public static void SRVStartService(Context context) {
         Intent i = new Intent(context, EncodeUpServer.class);
+        i.putExtra("ids",ids);
         i.setAction(EncodeUpServer.ACTION_RUN);
         startPlayService(context, i);
     }
-    public static void SRVStopService(Context context) {
+    public static   void SRVStopService(Context context) {
         Intent i = new Intent(context, EncodeUpServer.class);
         i.setAction(EncodeUpServer.ACTION_STOP);
         startPlayService(context, i);

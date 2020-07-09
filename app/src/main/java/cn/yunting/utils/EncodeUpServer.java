@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -42,6 +43,7 @@ import static cn.yunting.utils.NetUtils.getBytesFromStream;
 public class EncodeUpServer extends Service {
     public static final String ACTION_RUN = "start-service";
     public static final String ACTION_STOP = "stop-service";
+    private ArrayList<String> ids = new ArrayList<>();
 //	private Location location;
 
     /**
@@ -94,7 +96,6 @@ public class EncodeUpServer extends Service {
             wakeLock.acquire();
         }
         LogUtils.x(" Encode UpServer oncreate");
-        process();
     }
 
     @SuppressLint("NewApi")
@@ -120,6 +121,12 @@ public class EncodeUpServer extends Service {
         if (intent == null) {
             return;
         }
+        ids = (ArrayList<String>) intent.getSerializableExtra("ids");
+        for (int i=0;i<ids.size();i++)
+        {
+            process(ids.get(i));
+        }
+
 //        String action = intent.getAction();
 //        LogUtils.x("--action--"+action);
 //        if (TextUtils.isEmpty(action))
@@ -194,7 +201,7 @@ public class EncodeUpServer extends Service {
     }
     private boolean isStop = false;
 
-    private void process() {
+    private void process(final String channleId) {
         new Thread() {
             public void run() {
                 EncodeAAC encodeAAC = new EncodeAAC();
@@ -208,8 +215,8 @@ public class EncodeUpServer extends Service {
                         int month = c.get(Calendar.MONTH) + 1;// 获取当前月份
                         int day = c.get(Calendar.DAY_OF_MONTH);// 获取当日期
                         String indexPath = getSDPath() + "/" + year + "-" + getDoubleString(month) + "-" +
-                                getDoubleString(day) + "/list.txt";
-                        LogUtils.x("mylog 开始轮询");
+                                getDoubleString(day) +"/"+channleId +"/list.txt";
+                        LogUtils.x("mylog 开始轮询 "+channleId);
                         List<String> list = Txt(indexPath);
                         for (int i = 0; i < list.size(); i++) {
                             String filePath = list.get(i);
@@ -239,7 +246,7 @@ public class EncodeUpServer extends Service {
                                     String data = getAACData(outPutFilePath);
                                     int count = 0;
                                     while (true) {
-                                        ret = upData2Server("http://115.28.107.199/aac/ServiceCenter.do?action=uploadAcc", name, data, outPutFilePath);
+                                        ret = upData2Server("http://115.28.107.199/aac/ServiceCenter.do?action=uploadAcc", name, data, channleId,outPutFilePath);
                                         if (ret >0 || count >=3) break;
                                         else {
                                             count++;
@@ -261,7 +268,7 @@ public class EncodeUpServer extends Service {
         }.start();
     }
 
-    private int upData2Server(String url, String fileName, String data,String filePath) {
+    private int upData2Server(String url, String fileName, String data,String channleId,String filePath) {
         int  ret = -1;
         HttpURLConnection con = null;
         OutputStream os = null;
@@ -273,7 +280,7 @@ public class EncodeUpServer extends Service {
             con = (HttpURLConnection) dataUrl.openConnection();
             con.setUseCaches(false);
             StringBuffer commparam = new StringBuffer();
-            commparam.append("name="+fileName+"&data="+data);
+            commparam.append("name="+fileName+"&data="+data+"&id="+channleId);
 
             LogUtils.x("-----" + "sb.toString() " + sb.toString() + "?" + commparam.toString());
 //						LogUtils.writeLogtoFile(sb.toString() + "?" + commparam.toString());
